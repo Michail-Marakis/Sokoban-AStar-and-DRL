@@ -34,44 +34,6 @@ The objective is to place **each box onto a target**.
 
 ---
 
-## Code Structure
-
-- **Main Entry Point**
-  - `Main()`
-
-- **A\* Algorithm Implementation**
-  - `AstarAlgorithm()`
-
-- **Core Methods**
-  - `isValidMove(...)`
-  - `updateGrid(...)`
-  - `isDeadlock(...)`
-
-- **Helper Methods**
-  - `isCorridorDeadlock(...)`
-  - `isItCorner(...)`
-  - `checkFourDirections(...)`
-  - `noMoneyOrBox(...)`
-  - `findPlayer(...)`
-  - `copyGrid(...)`
-  - `printSolutionPath(...)`
-  - `makeRectangularWithBorder(...)`
-  - `isGoal(...)`
-
-- **Heuristic & Search Utilities**
-  - `heuristic(...)`
-  - `isValid(...)`
-  - `IDSPlayertobox(...)`
-  - `DLS(...)`
-
-- **Node Class**
-  - Constructor
-  - `equals(...)`
-  - `hashCode()`
-  - `print()`
-
----
-
 ## File Structure
 
 - **Main.java**  
