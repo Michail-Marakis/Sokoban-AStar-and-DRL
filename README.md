@@ -79,17 +79,6 @@ This heuristic combines box-to-goal proximity with player accessibility, providi
 
 ---
 
-## Highlights
-
-- A* search with heuristic state evaluation
-- IDS-enhanced heuristic calculation
-- Deadlock detection for pruning unsolvable states
-- Corner and corridor deadlock recognition
-- Automatic solution path reconstruction
-- Step-by-step solution visualization
-
----
-
 ## Why IDS Instead of BFS or DFS?
 
 The `IDSPlayertobox(...)` method computes the distance between the player and the nearest reachable box using **Iterative Deepening Search (IDS)**.
