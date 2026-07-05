@@ -129,6 +129,7 @@ This example demonstrates:
 - The gradual reduction of the heuristic value until the goal state is reached
 - The use of deadlock detection to avoid invalid or unsolvable states
 - 18 seconds for solution
+- We will build the UI with Swing Library in JAVA.
   
 ![alt text](step0-HardLevel.png)
 ![alt text](step389-HardLevel.png)
