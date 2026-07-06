@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c0892379-d5a0-4285-8098-e6e852be6d20" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/GameLevels.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AstarAlgorithm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AstarAlgorithm.java" afterDir="false" />
-    </list>
+    <list default="true" id="c0892379-d5a0-4285-8098-e6e852be6d20" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
