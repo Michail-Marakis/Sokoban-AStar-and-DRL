@@ -1,9 +1,13 @@
 # SOKOBAN AI SOLVER
 
 An AI-based solver for the classic **Sokoban** puzzle, implemented using the **A\*** search algorithm with heuristic evaluation and deadlock detection.
-The UI is being built with Swing Library in JAVA.
-A Deep Reinforcement Learning Algorithm is also being built.
+
 ---
+
+> The UI is being built with Swing Library in JAVA.
+> A Deep Reinforcement Learning Algorithm is also being built.
+
+--
 
 ## Game Rules
 
