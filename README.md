@@ -1,7 +1,8 @@
 # SOKOBAN AI SOLVER
 
 An AI-based solver for the classic **Sokoban** puzzle, implemented using the **A\*** search algorithm with heuristic evaluation and deadlock detection.
-
+The UI is being built with Swing Library in JAVA.
+A Deep Reinforcement Learning Algorithm is also being built.
 ---
 
 ## Game Rules
@@ -129,7 +130,6 @@ This example demonstrates:
 - The gradual reduction of the heuristic value until the goal state is reached
 - The use of deadlock detection to avoid invalid or unsolvable states
 - 18 seconds for solution
-- We will build the UI with Swing Library in JAVA.
   
 ![alt text](step0-HardLevel.png)
 ![alt text](step389-HardLevel.png)
