@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+from cnn import CNN
+
 class ActorCritic(nn.Module):
 
     def __init__(self, num_actions):
