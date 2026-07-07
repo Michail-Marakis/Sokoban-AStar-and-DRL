@@ -6,6 +6,7 @@ class Critic(nn.Module):
     def __init__(self , cnn):
         super().__init__()
 
+        #shared neural network with actor
         self.cnn = cnn
 
         self.value = nn.Sequential(
