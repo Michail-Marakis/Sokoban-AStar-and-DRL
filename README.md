@@ -18,8 +18,9 @@ The objective is to place **each box onto a target**.
 - Each target can hold **exactly one box**
 - **Multiple boxes on the same target are not allowed**
 - The correspondence must be **one-to-one (1–1)**
+  
+For a better and visual understanding of the game checkout this Youtoube tutorial [here](https://youtu.be/thbFuMKaCDk?si=kHzNhXH4iPauv-dw)  
 
-For a better and visual understanding of the game checkout this Youtoube tutorial [here](https://youtu.be/thbFuMKaCDk?si=kHzNhXH4iPauv-dw)
 ---
 
 For the **A\*** implementation click [here](https://github.com/Michail-Marakis/Sokoban-solver-using-A-star/tree/main/Astar)     
