@@ -1,3 +1,16 @@
+## Symbol Mappings
+
+| Symbol | Meaning              |
+|------:|----------------------|
+| `1`   | Player               |
+| `0`   | Box                  |
+| `#`   | Wall                 |
+| `$`   | Target               |
+| `*`   | Box on Target        |
+| `+`   | Player on Target     |
+
+---
+
 ## File Structure
 
 - **Main.java**  
