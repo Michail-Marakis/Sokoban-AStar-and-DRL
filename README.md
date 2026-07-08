@@ -1,6 +1,6 @@
 # SOKOBAN AI SOLVER
 
-An AI-based solver for the classic **Sokoban** puzzle, implemented using the **A\*** search algorithm. Our next goal is to implement the frontend and also develop a **Deep Reinforcement Learning** algorithm using PPO that can solve any Sokoban Problem
+An AI-based solver for the classic **Sokoban** puzzle, implemented using the **A\*** search algorithm. Our next goal is to implement the frontend and also develop a **Deep Reinforcement Learning (DRL)** algorithm using PPO that can solve any Sokoban Problem
 
 ---
 
@@ -34,3 +34,5 @@ The objective is to place **each box onto a target**.
 
 ---
 
+For the **A\*** implementation click [here](https://github.com/Michail-Marakis/Sokoban-solver-using-A-star/tree/main/Astar)
+For the **DRL** implementation click [here](https://github.com/Michail-Marakis/Sokoban-solver-using-A-star/tree/main/Deep%20Reinforcement%20Learning)
