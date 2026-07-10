@@ -1,0 +1,46 @@
+import torch
+
+#Environment
+
+MAX_STEPS = 500
+
+NUM_ACTIONS = 4
+
+NUM_CHANNELS = 6
+
+POOL_SIZE = 6
+
+
+#Training
+
+TOTAL_EPISODES = 10000
+
+ROLLOUT_STEPS = 2048
+
+MINI_BATCH_SIZE = 64
+
+UPDATE_EPOCHS = 10
+
+SAVE_EVERY = 100
+
+EVALUATE_EVERY = 50
+
+SEED = 42
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+#PPO Hyperparameters
+
+LEARNING_RATE = 3e-4
+
+GAMMA = 0.99
+
+GAE_LAMBDA = 0.95
+
+CLIP_EPSILON = 0.2
+
+VALUE_LOSS_COEF = 0.5
+
+ENTROPY_COEF = 0.01
+
+MAX_GRAD_NORM = 0.5
