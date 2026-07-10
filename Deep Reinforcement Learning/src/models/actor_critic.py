@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from cnn import CNN
+from models.cnn import CNN
 
 class ActorCritic(nn.Module):
 
@@ -9,7 +9,7 @@ class ActorCritic(nn.Module):
 
         self.cnn = CNN()
 
-        self.policy = nn.Sequential(
+        self.actor = nn.Sequential(
             nn.Linear(self.cnn.output_features,512),
             nn.ReLU(),
             nn.Linear(512,256),
@@ -17,7 +17,7 @@ class ActorCritic(nn.Module):
             nn.Linear(256,num_actions)
         )
 
-        self.value = nn.Sequential(
+        self.critic = nn.Sequential(
             nn.Linear(self.cnn.output_features,512),
             nn.ReLU(),
             nn.Linear(512,256),
