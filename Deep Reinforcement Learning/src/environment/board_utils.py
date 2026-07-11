@@ -1,4 +1,4 @@
-from environment.constants import DIRECTIONS
+from environment.actions import DIRECTIONS
 
 class Board:
 

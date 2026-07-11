@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
 from models.cnn import CNN
+from environment.actions import NUM_ACTIONS
 
 class ActorCritic(nn.Module):
 
-    def __init__(self, num_actions):
+    def __init__(self):
         super().__init__()
 
         self.cnn = CNN()
@@ -14,7 +15,7 @@ class ActorCritic(nn.Module):
             nn.ReLU(),
             nn.Linear(512,256),
             nn.ReLU(),
-            nn.Linear(256,num_actions)
+            nn.Linear(256, NUM_ACTIONS)
         )
 
         self.critic = nn.Sequential(
