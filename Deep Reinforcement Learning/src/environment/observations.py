@@ -20,7 +20,7 @@ class ObservationEncoder:
         height = len(board)
         width = len(board[0])
 
-        observation = np.zeros((6, height, width), dtype=np.float32)
+        observation = np.zeros((7, height, width), dtype=np.float32)
 
         for row in range(height):
             for col in range(width):
