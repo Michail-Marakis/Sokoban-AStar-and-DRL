@@ -40,6 +40,6 @@ class ObservationEncoder:
         return spaces.Box(
             low=0.0,
             high=1.0,
-            shape=(6, height, width),
+            shape=(7, height, width),
             dtype=np.float32
         )
