@@ -1,5 +1,5 @@
 from environment.actions import DIRECTIONS
-
+from tiles import Tile
 class Board:
 
     @staticmethod
@@ -14,12 +14,12 @@ class Board:
 
         target_cell = board[row][col]
 
-        #Wall
-        if target_cell == '#':
+        
+        if target_cell == Tile.WALL:
             return False
 
         #Box or box on target
-        if target_cell == '0' or target_cell == '*':
+        if target_cell == Tile.BOX or target_cell == Tile.BOX_ON_TARGET:
 
             next_row = row + DIRECTIONS[direction][0]
             next_col = col + DIRECTIONS[direction][1]
@@ -34,7 +34,7 @@ class Board:
             after_box = board[next_row][next_col]
 
             #Box cannot be pushed into wall or another box
-            return after_box not in ('#', '0', '*')
+            return after_box not in (Tile.WALL, Tile.BOX, Tile.BOX_ON_TARGET)
 
         #Empty space or target
         return True
@@ -55,22 +55,22 @@ class Board:
 
         
         #calculating what the player leaves behind
-        if oldTile == '+':
-            grid[oldRow][oldCol] = '$'
+        if oldTile == Tile.PLAYER_ON_TARGET:
+            grid[oldRow][oldCol] = Tile.TARGET
         else:
-            grid[oldRow][oldCol] = ' '
+            grid[oldRow][oldCol] = Tile.EMPTY
 
 
-        if targetTile == ' ' or targetTile == '$':
+        if targetTile == Tile.EMPTY or targetTile == Tile.TARGET:
             
-            if targetTile == '$':
-                grid[newRow][newCol] = '+'
+            if targetTile == Tile.TARGET:
+                grid[newRow][newCol] = Tile.PLAYER_ON_TARGET
             else:
-                grid[newRow][newCol] = '1'
+                grid[newRow][newCol] = Tile.PLAYER
             
             return grid
 
-        if targetTile == '0' or targetTile == '*':
+        if targetTile == Tile.BOX or targetTile == Tile.BOX_ON_TARGET:
             boxNewRow = newRow + DIRECTIONS[direction][0]
             boxNewCol = newCol + DIRECTIONS[direction][1]
 
@@ -81,28 +81,28 @@ class Board:
 
 
             #check if space exist for the box to be moved
-            if afterBoxTile == ' ' or afterBoxTile == '$':
+            if afterBoxTile == Tile.EMPTY or afterBoxTile == Tile.TARGET:
 
                 
                 #moved the box
-                if afterBoxTile == '$':
-                    grid[boxNewRow][boxNewCol] = '*'
+                if afterBoxTile == Tile.TARGET:
+                    grid[boxNewRow][boxNewCol] = Tile.BOX_ON_TARGET
                 else:
-                    grid[boxNewRow][boxNewCol] = '0'
+                    grid[boxNewRow][boxNewCol] = Tile.BOX
                 
 
                 #player moves in the position of the box
-                if (targetTile == '*'):
-                    grid[newRow][newCol] = '+'
+                if targetTile == Tile.BOX_ON_TARGET:
+                    grid[newRow][newCol] = Tile.PLAYER_ON_TARGET
                 else:
-                    grid[newRow][newCol] = '1'
+                    grid[newRow][newCol] = Tile.PLAYER
 
                 return grid
             
-        if oldTile == '+':
-            grid[oldRow][oldCol] = '+'
+        if oldTile == Tile.PLAYER_ON_TARGET:
+            grid[oldRow][oldCol] = Tile.PLAYER_ON_TARGET
         else:
-            grid[oldRow][oldCol] = '1'
+            grid[oldRow][oldCol] = Tile.PLAYER
 
         return grid
 
@@ -113,7 +113,7 @@ class Board:
         for r in range(len(grid)):
             for c in range(len(grid[r])):
                 
-                if grid[r][c] == '1' or grid[r][c] == '+':
+                if grid[r][c] == Tile.PLAYER or grid[r][c] == Tile.PLAYER_ON_TARGET:
                     return (r, c)
 
             
@@ -138,7 +138,7 @@ class Board:
             cols = max(cols, len(row))
 
         #Create a new board filled with walls
-        new_board = [['#' for _ in range(cols + 2)] for _ in range(rows + 2)]
+        new_board = [[Tile.WALL for _ in range(cols + 2)] for _ in range(rows + 2)]
 
         #Copy the original board
         for i in range(rows):
@@ -155,7 +155,7 @@ class Board:
             for cell in row:
 
                 #Free box or free target still exists
-                if cell in ('0', '$'):
+                if cell in (Tile.BOX, Tile.TARGET):
                     return False
 
         return True

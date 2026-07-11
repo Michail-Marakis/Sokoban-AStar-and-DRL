@@ -1,16 +1,17 @@
 import numpy as np
 from gymnasium import spaces
-
+from tiles import Tile
 
 class ObservationEncoder:
 
     SYMBOL_TO_CHANNEL = {
-        '1': 0,   #Player
-        '0': 1,   #Box
-        '#': 2,   #Wall
-        '$': 3,   #Target
-        '*': 4,   #Box on Target
-        '+': 5    #Player on Target
+        Tile.EMPTY: 0,  #Empty space
+        Tile.PLAYER: 1,   #Player
+        Tile.BOX: 2,   #Box
+        Tile.WALL: 3,   #Wall
+        Tile.TARGET: 4,   #Target
+        Tile.BOX_ON_TARGET: 5,   #Box on Target
+        Tile.PLAYER_ON_TARGET: 6    #Player on Target
     }
 
     @staticmethod

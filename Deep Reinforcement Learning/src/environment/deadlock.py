@@ -1,3 +1,4 @@
+from tiles import Tile
 
 class DeadlockDetector:
 
@@ -11,12 +12,12 @@ class DeadlockDetector:
                 if row <= 0 or row >= len(board) - 1 or col <= 0 or col >= len(board[0]) - 1:
                     continue
 
-                if board[row][col] != '0':
+                if board[row][col] != Tile.BOX:
                     continue
-                if board[row][col] == '*':
+                if board[row][col] == Tile.BOX_ON_TARGET:
                     continue
 
-                if board[row][col] == '0':
+                if board[row][col] == Tile.BOX:
 
                     #Corridor deadlock check
                     if DeadlockDetector._is_corridor_deadlock(board, row, col):
@@ -28,7 +29,7 @@ class DeadlockDetector:
                         continue
 
                     elif len(wallDirections) == 2:
-                        if DeadlockDetector._is_corner_deadlock(board, row, col) and board[row][col] != '$':
+                        if DeadlockDetector._is_corner_deadlock(board, row, col) and board[row][col] != Tile.TARGET:
                             return True
 
                     elif len(wallDirections) > 2:
@@ -40,31 +41,31 @@ class DeadlockDetector:
                         targetExistsUp = False
                         targetExistsdown = False
 
-                        if identifier == 1:  # column case
+                        if identifier == 1:  #column case
                             UpBlocked = False
                             downBlocked = False
 
                             #scan row to left
                             for k in range(col, -1, -1):
-                                if board[row][k] == '#':
+                                if board[row][k] == Tile.WALL:
                                     UpBlocked = True
                                     break
-                                if board[row][k] == '$':
+                                if board[row][k] == Tile.TARGET:
                                     targetExistsUp = True
                                     break
 
                         #scan row to right
                             for k in range(col, len(board[0])):
-                                if board[row][k] == '#':
+                                if board[row][k] == Tile.WALL:
                                     downBlocked = True
                                     break
-                                if board[row][k] == '$':
+                                if board[row][k] == Tile.TARGET:
                                     targetExistsdown = True
                                     break
 
                             fullWalls = True
                             for k in range(len(board[0])):
-                                if board[row][k] != '#':
+                                if board[row][k] != Tile.WALL:
                                     fullWalls = False
                                     break
 
@@ -83,25 +84,25 @@ class DeadlockDetector:
 
                             #scan column up
                             for k in range(row, -1, -1):
-                                if board[k][col] == '#':
+                                if board[k][col] == Tile.WALL:
                                     leftBlocked = True
                                     break
-                                if board[k][col] == '$':
+                                if board[k][col] == Tile.TARGET:
                                     targetExistsleft = True
                                     break
 
                             fullWalls = True
                             for chars in board:
-                                if chars[col] != '#':
+                                if chars[col] != Tile.WALL:
                                     fullWalls = False
                                     break
 
                             #scan column down
                             for k in range(row, len(board)):
-                                if board[k][col] == '#':
+                                if board[k][col] == Tile.WALL:
                                     rightBlocked = True
                                     break
-                                if board[k][col] == '$':
+                                if board[k][col] == Tile.TARGET:
                                     targetExistsright = True
                                     break
 
@@ -123,14 +124,14 @@ class DeadlockDetector:
 
         horizontal = (col - 1 >= 0 and
                       col + 1 < cols and
-                      board[row][col - 1] == '#' and
-                      board[row][col + 1] == '#')
+                      board[row][col - 1] == Tile.WALL and
+                      board[row][col + 1] == Tile.WALL)
         
 
         vertical = (row - 1 >= 0 and
                     row + 1 < rows and
-                    board[row - 1][col] == '#' and
-                    board[row + 1][col] == '#')
+                    board[row - 1][col] == Tile.WALL and
+                    board[row + 1][col] == Tile.WALL)
 
 
         if (not horizontal and not vertical): 
@@ -145,17 +146,17 @@ class DeadlockDetector:
             goalExists = False
 
             for value in board:
-                if value[col] == '0':
+                if value[col] == Tile.BOX:
                     boxExists = True
                 
-                if value[col] == '$':
+                if value[col] == Tile.TARGET:
                     goalExists = True
 
 
             #check left and right
             for chars in board:
                 if col - 1 >= 0 and col + 1 < cols:
-                    if chars[col - 1] != '#' or chars[col + 1] != '#':
+                    if chars[col - 1] != Tile.WALL or chars[col + 1] != Tile.WALL:
                         holes = holes + 1
                     
                 
@@ -170,17 +171,17 @@ class DeadlockDetector:
 
             for m in range(cols):
 
-                if board[row][m] == '0':
+                if board[row][m] == Tile.BOX:
                     boxExists = True
                 
-                if board[row][m] == '$':
+                if board[row][m] == Tile.TARGET:
                     goalExists = True
                 
             
             #check up and down
             for c in range(cols):
                 if row - 1 >= 0 and row + 1 < rows:
-                    if board[row - 1][c] != '#' or board[row + 1][c] != '#':
+                    if board[row - 1][c] != Tile.WALL or board[row + 1][c] != Tile.WALL:
                         holes = holes + 1
                     
                 
@@ -197,13 +198,13 @@ class DeadlockDetector:
         isCorner = False
 
         #check boundaries before each access
-        if row - 1 >= 0 and col - 1 >= 0 and board[row - 1][col] == '#' and board[row][col - 1] == '#':
+        if row - 1 >= 0 and col - 1 >= 0 and board[row - 1][col] == Tile.WALL and board[row][col - 1] == Tile.WALL:
             isCorner = True
-        elif row - 1 >= 0 and col + 1 < cols and board[row - 1][col] == '#' and board[row][col + 1] == '#':
+        elif row - 1 >= 0 and col + 1 < cols and board[row - 1][col] == Tile.WALL and board[row][col + 1] == Tile.WALL:
             isCorner = True
-        elif row + 1 < rows and col - 1 >= 0 and board[row + 1][col] == '#' and board[row][col - 1] == '#':
+        elif row + 1 < rows and col - 1 >= 0 and board[row + 1][col] == Tile.WALL and board[row][col - 1] == Tile.WALL:
             isCorner = True
-        elif row + 1 < rows and col + 1 < cols and board[row + 1][col] == '#' and board[row][col + 1] == '#':
+        elif row + 1 < rows and col + 1 < cols and board[row + 1][col] == Tile.WALL and board[row][col + 1] == Tile.WALL:
             isCorner = True
         
         return isCorner
@@ -219,19 +220,19 @@ class DeadlockDetector:
         cols = len(board[0])
 
         #up
-        if row - 1 >= 0 and board[row - 1][col] == '#':
+        if row - 1 >= 0 and board[row - 1][col] == Tile.WALL:
             wallDirections.append([1])
 
         #down
-        if row + 1 < rows and board[row + 1][col] == '#':
+        if row + 1 < rows and board[row + 1][col] == Tile.WALL:
             wallDirections.append([1])
 
         #left
-        if col - 1 >= 0 and board[row][col - 1] == '#':
+        if col - 1 >= 0 and board[row][col - 1] == Tile.WALL:
             wallDirections.append([0])
 
         #right
-        if col + 1 < cols and board[row][col + 1] == '#':
+        if col + 1 < cols and board[row][col + 1] == Tile.WALL:
             wallDirections.append([0])
 
         return wallDirections
