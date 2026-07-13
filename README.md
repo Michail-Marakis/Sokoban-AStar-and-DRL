@@ -1,6 +1,6 @@
 # SOKOBAN AI SOLVER
 
-An AI-based solver for the classic **Sokoban** puzzle. The project currently features a solver implemented using the **A\*** search algorithm. Our next milestones include building an interactive frontend and developing a **Deep Reinforcement Learning (DRL)** agent using a custom Gymnasium (formerly OpenAI Gym) environment powered by the PPO algorithm.
+e project features a traditional solver implemented using the **A\*** search algorithm, alongside a **Deep Reinforcement Learning (DRL)** agent trained with the PPO algorithm in a custom Gymnasium (formerly OpenAI Gym) environment. The next milestone is to build an interactive frontend for both algorithms using **Java Swing Framework** for the A* and **pygame** for DRL.
 
 ---
 
