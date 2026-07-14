@@ -49,6 +49,18 @@ class SokobanEnv(gym.Env):
 
         return observation, info
 
+    def set_level(self, level):
+
+        self.level_id = level
+
+        self.initialized_board = Board.pad_board(
+            GameLevels.levels(level)
+        )
+
+        self.board = Board.copy_grid(self.initialized_board)
+
+        self.player_row, self.player_col = Board.find_player(self.board)
+
 
     def step(self, action):
 

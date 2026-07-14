@@ -7,14 +7,19 @@ class Logger:
     def __init__(self, log_dir="logs"):
 
         self.log_dir = log_dir
-        os.makedirs(log_dir, exist_ok=True)
+        os.makedirs(self.log_dir, exist_ok=True)
 
-        self.csv_file = os.path.join(log_dir, "training_log.csv")
+    
+        #Training log
+    
+        self.training_file = os.path.join(
+            self.log_dir,
+            "training_log.csv"
+        )
 
-        #Create csv file
-        if not os.path.exists(self.csv_file):
+        if not os.path.exists(self.training_file):
 
-            with open(self.csv_file, "w", newline="") as file:
+            with open(self.training_file, "w", newline="") as file:
 
                 writer = csv.writer(file)
 
@@ -26,7 +31,31 @@ class Logger:
                     "Deadlock"
                 ])
 
+      
+        #Evaluation log
+        
 
+        self.evaluation_file = os.path.join(
+            self.log_dir,
+            "evaluation_log.csv"
+        )
+
+        if not os.path.exists(self.evaluation_file):
+
+            with open(self.evaluation_file, "w", newline="") as file:
+
+                writer = csv.writer(file)
+
+                writer.writerow([
+                    "Episode",
+                    "Level",
+                    "SuccessRate",
+                    "AverageReward",
+                    "AverageSteps",
+                    "Deadlocks"
+                ])
+
+    #Training
     def log_episode(
         self,
         episode,
@@ -44,7 +73,7 @@ class Logger:
             f"Deadlock: {deadlock}"
         )
 
-        with open(self.csv_file, "a", newline="") as file:
+        with open(self.training_file, "a", newline="") as file:
 
             writer = csv.writer(file)
 
@@ -57,18 +86,41 @@ class Logger:
             ])
 
 
+    #Evaluation
+    def log_evaluation(
+        self,
+        episode,
+        level,
+        success_rate,
+        average_reward,
+        average_steps,
+        deadlocks
+    ):
+
+        print(
+            f"Level {level} | "
+            f"Success: {success_rate:.1f}% | "
+            f"Avg Reward: {average_reward:.2f} | "
+            f"Avg Steps: {average_steps:.1f} | "
+            f"Deadlocks: {deadlocks}"
+        )
+
+        with open(self.evaluation_file, "a", newline="") as file:
+
+            writer = csv.writer(file)
+
+            writer.writerow([
+                episode,
+                level,
+                success_rate,
+                average_reward,
+                average_steps,
+                deadlocks
+            ])
+
+
+    #Checkpoints
+
     def log_model(self, path):
 
         print(f"Model saved to {path}")
-
-
-    def log_evaluation(
-        self,
-        reward,
-        completed
-    ):
-
-        print("\n========== Evaluation ==========")
-        print(f"Reward: {reward:.2f}")
-        print(f"Completed: {completed}")
-        print("================================\n")

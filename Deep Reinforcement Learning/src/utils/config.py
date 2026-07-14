@@ -81,3 +81,14 @@ LOAD_CHECKPOINT = True
 CHECKPOINT_PATH = "checkpoints/ppo_3000.pt"
 
 START_EPISODE = 0
+
+
+#training
+
+USE_RANDOM_LEVELS = True
+
+USE_CURRICULUM = False
+
+TRAIN_LEVELS = [0, 1, 2, 3, 4]
+
+EVALUATION_EPISODES = 10

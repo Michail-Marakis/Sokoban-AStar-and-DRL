@@ -1,5 +1,5 @@
 import utils.config as config
-
+import random
 from environment.sokoban_env import SokobanEnv
 import torch
 from agent.memory import Memory
@@ -47,6 +47,8 @@ class Trainer:
 
     def train_episode(self):
 
+        level = self.choose_level()
+        self.env.set_level(level)
         observation, _ = self.env.reset()
 
         episode_reward = 0
@@ -73,7 +75,7 @@ class Trainer:
                 log_prob=log_prob,
                 value=value)
 
-                    #PPO update every rollout
+            #PPO update every rollout
             if self.memory.size() >= config.ROLLOUT_STEPS:
 
                 self.agent.update(self.memory)
@@ -96,22 +98,79 @@ class Trainer:
 
     def evaluate(self):
 
-        observation, _ = self.env.reset()
+        print("\n========== Evaluation ==========\n")
 
-        terminated = False
-        truncated = False
+        for level in config.TRAIN_LEVELS:
 
-        total_reward = 0
+            total_reward = 0.0
+            total_steps = 0
+            successes = 0
+            deadlocks = 0
 
-        while not (terminated or truncated):
+            for _ in range(config.EVALUATION_EPISODES):
 
-            action = self.agent.predict(observation)
+                self.env.set_level(level)
 
-            observation, reward, terminated, truncated, _ = self.env.step(action)
+                observation, _ = self.env.reset()
 
-            total_reward += reward
+                terminated = False
+                truncated = False
 
-            self.env.render()
+                while not (terminated or truncated):
 
-        print(f"Evaluation Reward: {total_reward}")
+                    action = self.agent.predict(observation)
+
+                    observation, reward, terminated, truncated, info = self.env.step(action)
+
+                    total_reward += reward
+
+                total_steps += info["steps"]
+
+                if info["completed"]:
+                    successes += 1
+
+                if info["deadlock"]:
+                    deadlocks += 1
+
+            self.logger.log_evaluation(
+                pisode=self.episode,
+                level=level,
+                success_rate=100 * successes / config.EVALUATION_EPISODES,
+                average_reward=total_reward / config.EVALUATION_EPISODES,
+                average_steps=total_steps / config.EVALUATION_EPISODES,
+                deadlocks=deadlocks
+            )
+
+        print("\n===============================\n")
         
+
+    def choose_level(self):
+
+
+        if config.USE_CURRICULUM:
+
+            total_levels = len(config.TRAIN_LEVELS)
+
+            progress = self.episode / config.TOTAL_EPISODES
+
+            unlocked = max(
+                1,
+                int(progress * total_levels) + 1
+            )
+
+            unlocked = min(
+                unlocked,
+                total_levels
+            )
+
+            available_levels = config.TRAIN_LEVELS[:unlocked]
+
+            return random.choice(available_levels)
+
+
+        if config.USE_RANDOM_LEVELS:
+
+            return random.choice(config.TRAIN_LEVELS)
+
+
+        return config.TRAIN_LEVELS[0]
