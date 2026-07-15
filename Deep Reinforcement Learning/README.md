@@ -14,6 +14,21 @@ The project includes:
 * Multi-level training with random level selection / curriculum learning support
 * Logging and checkpoint management
 
+---
+
+## Symbol Mappings
+
+| Symbol | Meaning              |
+|------:|----------------------|
+| `1`   | Player               |
+| `0`   | Box                  |
+| `#`   | Wall                 |
+| `$`   | Target               |
+| `*`   | Box on Target        |
+| `+`   | Player on Target     |
+
+---
+
 ## Current Status
 
 *  PPO implementation completed **(Done)**
