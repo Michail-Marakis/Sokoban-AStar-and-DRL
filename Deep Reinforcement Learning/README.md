@@ -34,5 +34,5 @@ The project includes:
 *  PPO implementation completed **(Done)**
 *  Sokoban Gymnasium environment completed **(Done)**
 *  Training and evaluation pipeline completed **(Done)**
-*  Training is in progress to obtain the best-performing model. **(Done)**
-*  A graphical user interface (GUI) using **Pygame** will be added for interactive visualization of the trained agent. **(Done)**
+*  Training is in progress to obtain the best-performing model. **(Pending)**
+*  A graphical user interface (GUI) using **Pygame** will be added for interactive visualization of the trained agent. **(Pending)**
