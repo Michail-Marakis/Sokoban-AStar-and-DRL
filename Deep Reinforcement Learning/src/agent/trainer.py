@@ -133,7 +133,7 @@ class Trainer:
                     deadlocks += 1
 
             self.logger.log_evaluation(
-                pisode=self.episode,
+                episode=self.episode,
                 level=level,
                 success_rate=100 * successes / config.EVALUATION_EPISODES,
                 average_reward=total_reward / config.EVALUATION_EPISODES,
