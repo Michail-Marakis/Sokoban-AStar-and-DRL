@@ -11,15 +11,17 @@ from environment.renderer import Renderer
 
 class SokobanEnv(gym.Env):
 
-    def __init__(self, level_id=0):
+    def __init__(self):
         super().__init__()
 
-        self.level_id = level_id
         self.renderer = Renderer()
-        self.initialized_board = Board.pad_board(GameLevels.levels(level_id))
-        self.board = Board.copy_grid(self.initialized_board)
+        self.level_path = None
+        self.initialized_board = None
+        self.board = None
 
-        self.player_row, self.player_col = Board.find_player(self.board)
+        self.player_row = 0
+
+        self.player_col = 0
 
         self.steps = 0
         self.total_reward = 0
@@ -27,10 +29,7 @@ class SokobanEnv(gym.Env):
         #Gymnasium spaces
         self.action_space = spaces.Discrete(NUM_ACTIONS)
 
-        height = len(self.board)
-        width = len(self.board[0])
-
-        self.observation_space = ObservationEncoder.observation_space(height, width)
+        self.set_level(GameLevels.random_level(["easy"]))
 
 
     def reset(self, seed=None, options=None):
@@ -45,21 +44,31 @@ class SokobanEnv(gym.Env):
 
         observation = ObservationEncoder.encode(self.board)
 
-        info = { "level": self.level_id, "steps": self.steps}
+        return observation, self._get_info()
 
-        return observation, info
+    def set_level(self, level_path):
 
-    def set_level(self, level):
-
-        self.level_id = level
+        self.level_path = level_path
 
         self.initialized_board = Board.pad_board(
-            GameLevels.levels(level)
+            GameLevels.load(level_path)
         )
 
-        self.board = Board.copy_grid(self.initialized_board)
+        self.board = Board.copy_grid(
+            self.initialized_board
+        )
 
-        self.player_row, self.player_col = Board.find_player(self.board)
+        self.player_row, self.player_col = Board.find_player(
+            self.board
+        )
+
+        height = len(self.board)
+        width = len(self.board[0])
+
+        self.observation_space = ObservationEncoder.observation_space(
+            height,
+            width
+        )
 
 
     def step(self, action):
@@ -107,15 +116,13 @@ class SokobanEnv(gym.Env):
 
         return observation, reward, terminated, truncated, info
 
+
     def render(self):
-        
-        if self.renderer is not None:
-            self.renderer.render(self.board)
+        self.renderer.render(self.board)
+
 
     def close(self):
-        
-        if self.renderer is not None:
-            self.renderer.close()
+        self.renderer.close()
 
     def _get_observation(self):
         return ObservationEncoder.encode(self.board)
@@ -187,7 +194,7 @@ class SokobanEnv(gym.Env):
         ):
 
         return {
-            "level": self.level_id,
+            "level": self.level_path.name,
             "steps": self.steps,
             "completed": completed,
             "deadlock": deadlock,

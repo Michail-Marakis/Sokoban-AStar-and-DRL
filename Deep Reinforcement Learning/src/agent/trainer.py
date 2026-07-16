@@ -1,5 +1,5 @@
+from environment.levels import GameLevels
 import utils.config as config
-import random
 from environment.sokoban_env import SokobanEnv
 import torch
 from agent.memory import Memory
@@ -47,8 +47,8 @@ class Trainer:
 
     def train_episode(self):
 
-        level = self.choose_level()
-        self.env.set_level(level)
+        level_path = self.choose_level()
+        self.env.set_level(level_path)
         observation, _ = self.env.reset()
 
         episode_reward = 0
@@ -100,77 +100,98 @@ class Trainer:
 
         print("\n========== Evaluation ==========\n")
 
-        for level in config.TRAIN_LEVELS:
+        for difficulty in GameLevels.DIFFICULTIES:
 
-            total_reward = 0.0
-            total_steps = 0
-            successes = 0
-            deadlocks = 0
+            levels = GameLevels.get_levels(difficulty)
 
-            for _ in range(config.EVALUATION_EPISODES):
+            for level_path in levels:
 
-                self.env.set_level(level)
+                total_reward = 0.0
+                total_steps = 0
+                successes = 0
+                deadlocks = 0
 
-                observation, _ = self.env.reset()
+                for _ in range(config.EVALUATION_EPISODES):
 
-                terminated = False
-                truncated = False
+                    self.env.set_level(level_path)
 
-                while not (terminated or truncated):
+                    observation, _ = self.env.reset()
 
-                    action = self.agent.predict(observation)
+                    terminated = False
+                    truncated = False
 
-                    observation, reward, terminated, truncated, info = self.env.step(action)
+                    while not (terminated or truncated):
 
-                    total_reward += reward
+                        action = self.agent.predict(observation)
 
-                total_steps += info["steps"]
+                        observation, reward, terminated, truncated, info = \
+                            self.env.step(action)
 
-                if info["completed"]:
-                    successes += 1
+                        total_reward += reward
 
-                if info["deadlock"]:
-                    deadlocks += 1
+                    total_steps += info["steps"]
 
-            self.logger.log_evaluation(
-                episode=self.episode,
-                level=level,
-                success_rate=100 * successes / config.EVALUATION_EPISODES,
-                average_reward=total_reward / config.EVALUATION_EPISODES,
-                average_steps=total_steps / config.EVALUATION_EPISODES,
-                deadlocks=deadlocks
-            )
+                    if info["completed"]:
+                        successes += 1
+
+                    if info["deadlock"]:
+                        deadlocks += 1
+
+                self.logger.log_evaluation(
+                    episode=self.episode,
+                    level=f"{difficulty}/{level_path.name}",
+                    success_rate=100 * successes / config.EVALUATION_EPISODES,
+                    average_reward=total_reward / config.EVALUATION_EPISODES,
+                    average_steps=total_steps / config.EVALUATION_EPISODES,
+                    deadlocks=deadlocks
+                )
 
         print("\n===============================\n")
         
 
     def choose_level(self):
 
-
         if config.USE_CURRICULUM:
-
-            total_levels = len(config.TRAIN_LEVELS)
 
             progress = self.episode / config.TOTAL_EPISODES
 
-            unlocked = max(
-                1,
-                int(progress * total_levels) + 1
-            )
+            if progress < 0.25:
 
-            unlocked = min(
-                unlocked,
-                total_levels
-            )
+                difficulties = [
+                    "easy"
+                ]
 
-            available_levels = config.TRAIN_LEVELS[:unlocked]
+            elif progress < 0.50:
 
-            return random.choice(available_levels)
+                difficulties = [
+                    "easy",
+                    "medium"
+                ]
 
+            elif progress < 0.75:
 
-        if config.USE_RANDOM_LEVELS:
+                difficulties = [
+                    "easy",
+                    "medium",
+                    "hard"
+                ]
 
-            return random.choice(config.TRAIN_LEVELS)
+            else:
 
+                difficulties = [
+                    "easy",
+                    "medium",
+                    "hard",
+                    "expert"
+                ]
 
-        return config.TRAIN_LEVELS[0]
+        else:
+
+            difficulties = [
+                "easy",
+                "medium",
+                "hard",
+                "expert"
+            ]
+
+        return GameLevels.random_level(difficulties)
