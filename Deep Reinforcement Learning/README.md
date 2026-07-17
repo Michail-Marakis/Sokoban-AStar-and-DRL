@@ -2,7 +2,7 @@
 
 This directory contains a **Deep Reinforcement Learning (DRL)** implementation for solving Sokoban using the **Proximal Policy Optimization (PPO)** algorithm.
 
-The purpose of this implementation is to experiment with Deep Reinforcement Learning by developing a complete DRL pipeline from scratch. Τhis project was also an opportunity to become more familiar with designing custom Gymnasium environments, implementing reinforcement learning algorithms in PyTorch, and understanding how modern DRL agents learn through interaction with an environment. It serves as a hands-on learning project before starting my undergraduate thesis on Robotics using Deep Reinforcement Learning, Multi - Armed Bandits and Automations.
+The purpose of this implementation is to experiment with **Deep Reinforcement Learning** by developing a complete DRL pipeline from scratch. Τhis project was also an opportunity to become more familiar with designing **custom Gymnasium environments**, implementing reinforcement learning algorithms in PyTorch, and understanding how modern DRL agents learn through interaction with an environment. It serves as a hands-on learning project **before starting my undergraduate thesis** on Robotics using Deep Reinforcement Learning, Multi-Armed Bandits and Automations.
 
 The project includes:
 
