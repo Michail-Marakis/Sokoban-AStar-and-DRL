@@ -7,7 +7,6 @@ from agent.ppo_agent import PPOAgent
 
 from utils.logger import Logger
 
-
 class Trainer:
 
     def __init__(self):
@@ -93,7 +92,8 @@ class Trainer:
             reward=episode_reward,
             steps=self.env.steps,
             completed=info["completed"],
-            deadlock=info["deadlock"]
+            deadlock=info["deadlock"],
+            level = level_path
         )
 
     def evaluate(self):

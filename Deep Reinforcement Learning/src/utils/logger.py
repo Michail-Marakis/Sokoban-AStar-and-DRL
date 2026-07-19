@@ -62,15 +62,17 @@ class Logger:
         reward,
         steps,
         completed,
-        deadlock
+        deadlock,
+        level
     ):
 
         print(
-            f"Episode {episode:5d} | "
-            f"Reward: {reward:8.2f} | "
-            f"Steps: {steps:4d} | "
-            f"Completed: {completed} | "
-            f"Deadlock: {deadlock}"
+        f"Episode {episode:5d} | "
+        f"Level {level.stem:15s} | "
+        f"Reward: {reward:8.2f} | "
+        f"Steps: {steps:4d} | "
+        f"Completed: {completed} | "
+        f"Deadlock: {deadlock}"
         )
 
         with open(self.training_file, "a", newline="") as file:
@@ -79,6 +81,7 @@ class Logger:
 
             writer.writerow([
                 episode,
+                level.stem,
                 reward,
                 steps,
                 completed,
@@ -110,12 +113,12 @@ class Logger:
             writer = csv.writer(file)
 
             writer.writerow([
-                episode,
-                level,
-                success_rate,
-                average_reward,
-                average_steps,
-                deadlocks
+                "Episode",
+                "Level",
+                "Reward",
+                "Steps",
+                "Completed",
+                "Deadlock"
             ])
 
 
