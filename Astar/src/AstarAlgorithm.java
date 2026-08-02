@@ -2,107 +2,160 @@ import java.util.*;
 
 public class AstarAlgorithm {
 
-    static void solve(){
-        Scanner sc = new Scanner(System.in);
+    public static SolveResult solve(int choice) {
+        long startTime = System.currentTimeMillis();
 
-        System.out.println("Choose the level you want: 0(very easy) 1(easy) 2(medium) 3(hard) 4(very hard) 5(No solution case)");
-        System.out.println("Levels 0-4 have solutions, 5th doesn't");
-
-        int choice = sc.nextInt();
         char[][] level = GameLevels.levels(choice);
-
         level = BoardUtils.makeRectangularWithBorder(level);
 
-        System.out.println("Searching for a solution...");
-
-        int countBox = 0;
+        int countBoxes = 0;
         int countGoals = 0;
-        int countPerson = 0;
-        for (char[] chars : level) {
-            for (int j = 0; j < level[0].length; j++) {
-                if (chars[j] == '0') countBox++;
-                if (chars[j] == '$') countGoals++;
-                if(chars[j] == '1') countPerson++;
+        int countPlayers = 0;
+
+        for (char[] row : level) {
+            for (char tile : row) {
+                if (tile == '0') {
+                    countBoxes++;
+                } else if (tile == '$') {
+                    countGoals++;
+                } else if (tile == '1') {
+                    countPlayers++;
+                } else if (tile == '*') {
+                    countBoxes++;
+                    countGoals++;
+                } else if (tile == '+') {
+                    countPlayers++;
+                    countGoals++;
+                }
             }
         }
-        if (countBox != countGoals) {
-            System.out.println("Boxes and Goals can't match," +
-                    "\nNumber of free boxes at the map: " + countBox +
-                    "\n" + "Number of free goals at the map: " + countGoals);
-            return;
+
+        if (countBoxes != countGoals) {
+            return SolveResult.failure(
+                    "The number of boxes and targets does not match."
+                            + "\nBoxes: " + countBoxes
+                            + "\nTargets: " + countGoals,
+                    System.currentTimeMillis() - startTime
+            );
         }
 
-        if (countPerson > 1) {
-            throw new ArrayIndexOutOfBoundsException("There is are more than 1 player on board");
-        } else if (countPerson == 0) {
-            throw new ArrayIndexOutOfBoundsException("There is no player on board");
+        if (countPlayers > 1) {
+            return SolveResult.failure(
+                    "There is more than one player on the board.",
+                    System.currentTimeMillis() - startTime
+            );
         }
 
+        if (countPlayers == 0) {
+            return SolveResult.failure(
+                    "There is no player on the board.",
+                    System.currentTimeMillis() - startTime
+            );
+        }
 
-        int[] startP = BoardUtils.findPlayer(level);        //starting position
+        int[] startPosition = BoardUtils.findPlayer(level);
 
-        Node start = new Node(BoardUtils.copyGrid(level), startP[0], startP[1], null, 0, HeuristicEvaluator.heuristic(level));  //starting grod
+        Node start = new Node(
+                BoardUtils.copyGrid(level),
+                startPosition[0],
+                startPosition[1],
+                null,
+                0,
+                HeuristicEvaluator.heuristic(level)
+        );
 
+        PriorityQueue<Node> open = new PriorityQueue<>(
+                Comparator.comparingInt(node -> node.f)
+        );
 
-        PriorityQueue<Node> open = new PriorityQueue<>(Comparator.comparingInt(n -> n.f)); //prioritize smaller f value
-        Set<Node> visited = new HashSet<>();    //hashset
+        Set<Node> visited = new HashSet<>();
 
         open.add(start);
         visited.add(start);
 
-        long startTime = System.currentTimeMillis();
-        while (!open.isEmpty()) {       //until no open moves exist
+        while (!open.isEmpty()) {
             Node current = open.poll();
 
-            if (BoardUtils.isGoal(current)) {                       //check if the game ended
-                if (BoardUtils.noMoneyOrBox(current.grid)) {
-                    printSolutionPath(current);
-                    System.out.println("Solution found! timeMs=" + (System.currentTimeMillis() - startTime));
-                } else {
-                    continue;
-                }
-                return;
+            if (BoardUtils.isGoal(current)
+                    && BoardUtils.noMoneyOrBox(current.grid)) {
+
+                List<Node> path = buildSolutionPath(current);
+
+                return SolveResult.success(
+                        path,
+                        System.currentTimeMillis() - startTime,
+                        visited.size()
+                );
             }
 
-            for (int dir = 0; dir < Main.DIRECTIONS.length; dir++) {    //for every possible next move
-                int newR = current.playerRow + Main.DIRECTIONS[dir][0];
-                int newC = current.playerCol + Main.DIRECTIONS[dir][1];
+            for (int direction = 0;
+                 direction < Main.DIRECTIONS.length;
+                 direction++) {
 
-                if (!BoardUtils.isValidMove(newR, newC, current.grid, dir)) continue;   //check if the move can happen
-                if (DeadlockDetector.isDeadlock(current.grid)) continue;                //check if the moves causes deadlock
+                int newRow =
+                        current.playerRow
+                                + Main.DIRECTIONS[direction][0];
 
-                char[][] newGrid = BoardUtils.updateGrid(newR, newC, BoardUtils.copyGrid(current.grid), dir);
-                Node child = new Node(newGrid, newR, newC, current, current.g + 1, HeuristicEvaluator.heuristic(newGrid));
+                int newColumn =
+                        current.playerCol
+                                + Main.DIRECTIONS[direction][1];
 
-                if (!visited.contains(child)) {
-                    visited.add(child);
+                if (!BoardUtils.isValidMove(
+                        newRow,
+                        newColumn,
+                        current.grid,
+                        direction
+                )) {
+                    continue;
+                }
+
+                char[][] newGrid = BoardUtils.updateGrid(
+                        newRow,
+                        newColumn,
+                        BoardUtils.copyGrid(current.grid),
+                        direction
+                );
+
+                /*
+                 * Check the resulting state, not current.grid.
+                 */
+                if (DeadlockDetector.isDeadlock(newGrid)) {
+                    continue;
+                }
+
+                Node child = new Node(
+                        newGrid,
+                        newRow,
+                        newColumn,
+                        current,
+                        current.g + 1,
+                        HeuristicEvaluator.heuristic(newGrid)
+                );
+
+                if (visited.add(child)) {
                     open.add(child);
                 }
             }
         }
-        System.out.println("Not possible to find solution. Time: " + (System.currentTimeMillis() - startTime) + " ms");
+
+        return SolveResult.failure(
+                "No solution was found.",
+                System.currentTimeMillis() - startTime
+        );
     }
 
-
-
-    static void printSolutionPath(Node goal) {
+    private static List<Node> buildSolutionPath(Node goal) {
         List<Node> path = new ArrayList<>();
-        Node cur = goal;
-        while (cur != null) {
-            path.add(cur);
-            cur = cur.parent;
-        }
-        Collections.reverse(path);
-        int step = 0;
-        for (Node n : path) {
-            System.out.println("Step " + (step++));
-            n.print();
-            System.out.println("h=" + n.h);
-            System.out.println();
-            System.out.println("f=" + n.f);
-            System.out.println();
-            System.out.println("----------------------");
-        }
-    }
 
+        Node current = goal;
+
+        while (current != null) {
+            path.add(current);
+            current = current.parent;
+        }
+
+        Collections.reverse(path);
+
+        return path;
+    }
 }

@@ -1,31 +1,61 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Node {
+
     char[][] grid;
-    int playerRow, playerCol;
+
+    int playerRow;
+    int playerCol;
+
     Node parent;
+
     int h;
     int g;
     int f;
 
-    Node(char[][] grid, int r, int c, Node p, int g, int h){
-        this.grid = grid;
-        this.playerRow = r;
-        this.playerCol = c;
-        this.parent = p;
+    Node(
+            char[][] grid,
+            int row,
+            int column,
+            Node parent,
+            int g,
+            int h
+    ) {
+        this.grid = copyGrid(grid);
+        this.playerRow = row;
+        this.playerCol = column;
+        this.parent = parent;
         this.g = g;
         this.h = h;
         this.f = g + h;
     }
 
+    private static char[][] copyGrid(char[][] original) {
+        char[][] copy = new char[original.length][];
+
+        for (int row = 0; row < original.length; row++) {
+            copy[row] = original[row].clone();
+        }
+
+        return copy;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Node)) return false;
-        Node n = (Node) o;
-        return playerRow == n.playerRow &&
-                playerCol == n.playerCol &&
-                Arrays.deepEquals(grid, n.grid);
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
+        if (!(object instanceof Node)) {
+            return false;
+        }
+
+        Node other = (Node) object;
+
+        return playerRow == other.playerRow
+                && playerCol == other.playerCol
+                && Arrays.deepEquals(grid, other.grid);
     }
 
     @Override
@@ -35,9 +65,8 @@ public class Node {
         return result;
     }
 
-
-    void print(){
-        for(char[] row : grid){
+    void print() {
+        for (char[] row : grid) {
             System.out.println(new String(row));
         }
     }

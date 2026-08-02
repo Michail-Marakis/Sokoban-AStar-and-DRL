@@ -1,11 +1,28 @@
-public class Main {
-    static final int[][] DIRECTIONS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; //up,right,down,left
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-    public static void main(String[] args) throws Exception {
-        try{
-            AstarAlgorithm.solve();
-        }catch(OutOfMemoryError e){
-            throw new Exception("Out of memory. Available memory is not enough to solve this problem");
-        }
+public class Main {
+
+    public static final int[][] DIRECTIONS = {
+            {-1, 0},
+            {1, 0},
+            {0, -1},
+            {0, 1}
+    };
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName()
+                );
+            } catch (Exception ignored) {
+            }
+
+            LevelSelectionFrame frame =
+                    new LevelSelectionFrame();
+
+            frame.setVisible(true);
+        });
     }
 }
