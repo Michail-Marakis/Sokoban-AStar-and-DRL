@@ -161,3 +161,17 @@ This example demonstrates:
 * The use of deadlock detection to avoid invalid or unsolvable states.
 * The reconstruction and visualization of a solution containing 389 moves.
 * A total solving time of approximately 18 seconds for the tested hard level.
+
+## How to Run
+
+1. Run the `Main` class.
+2. Select one of the available Sokoban levels from the drop-down menu.
+3. Click **Solve** to start the A* search.
+
+<p align="center">
+  <img src="instr.png" alt="Sokoban level selection and solve controls" width="380">
+</p>
+
+4. Wait for the search to complete. The solution viewer will open automatically when a solution is found.
+5. Use the navigation controls to move through the solution step by step or jump directly to a specific step.
+
