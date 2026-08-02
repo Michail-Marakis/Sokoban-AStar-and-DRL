@@ -1,112 +1,163 @@
 ## Symbol Mappings
 
-| Symbol | Meaning              |
-|------:|----------------------|
-| `1`   | Player               |
-| `0`   | Box                  |
-| `#`   | Wall                 |
-| `$`   | Target               |
-| `*`   | Box on Target        |
-| `+`   | Player on Target     |
+| Symbol | Meaning          |
+| :----: | ---------------- |
+|   `1`  | Player           |
+|   `0`  | Box              |
+|   `#`  | Wall             |
+|   `$`  | Target           |
+|   `*`  | Box on Target    |
+|   `+`  | Player on Target |
 
 ---
 
 ## File Structure
 
-- **Main.java**  
-  Entry point of the application. Handles level selection, initialization, and execution of the A* solver.
+* **Main.java**
+  Entry point of the application. Initializes the Swing interface and stores the movement directions used by the solver.
 
-- **AStarSolver.java**  
-  Implements the core A* search algorithm and reconstructs the final solution path.
+* **AstarAlgorithm.java**
+  Implements the core A* search algorithm. It validates the selected level, explores the available states, detects the goal state, and reconstructs the final solution path.
 
-- **BoardUtils.java**  
-  Provides utility methods for board manipulation, including move validation, board updates, player localization, state copying, and board preprocessing.
+* **SolveResult.java**
+  Encapsulates the result produced by the A* solver. It stores whether a solution was found, the solution path, the execution time, the number of visited states, and an appropriate status message.
 
-- **DeadlockDetector.java**  
-  Implements deadlock detection techniques (corner and corridor deadlocks) used to cut down unsolvable states and significantly reduce the search space.
+* **LevelSelectionFrame.java**
+  Provides the initial Swing window used to select a Sokoban level and start the solver. The search runs through a `SwingWorker`, preventing the user interface from freezing while the algorithm is executing.
 
-- **GameLevels.java**  
+* **SokobanSolutionViewer.java**
+  Displays the complete solution path in a graphical Swing interface. It allows the user to navigate between steps, move directly to a specific step, and inspect the corresponding `g`, `h`, and `f` values.
+
+* **BoardUtils.java**
+  Provides utility methods for board manipulation, including move validation, board updates, player localization, state copying, goal checking, and board preprocessing.
+
+* **DeadlockDetector.java**
+  Implements deadlock detection techniques, such as corner and corridor deadlocks. These checks eliminate unsolvable states and significantly reduce the search space.
+
+* **GameLevels.java**
   Stores the predefined Sokoban levels used for testing and evaluation.
 
-- **HeuristicEvaluator.java**  
-  Implements the heuristic function used by A*. Combines Manhattan distance between boxes and goals with an IDS-based estimation of the player's distance to the nearest box.
+* **HeuristicEvaluator.java**
+  Implements the heuristic function used by A*. It combines the Manhattan distance between boxes and targets with an IDS-based estimation of the player's distance to the nearest reachable box.
 
-- **Node.java**  
-  Represents a single search state, including the board configuration, player position, path cost (`g`), heuristic value (`h`), evaluation function (`f`), and parent reference for solution reconstruction.
-  
+* **Node.java**
+  Represents a single search state. Each node stores the board configuration, player position, path cost (`g`), heuristic value (`h`), evaluation value (`f`), and a parent reference used for solution reconstruction.
+
 ---
 
 ## Heuristic Function
 
 The heuristic used by the A* algorithm consists of two components:
 
-h(n)=h₁(n)+h₂(n)
+**h(n) = h₁(n) + h₂(n)**
 
 where:
 
-- **h₁(n)**: Sum of the minimum Manhattan distances between each box and its nearest goal.
-- **h₂(n)**: Distance from the player to the nearest box, estimated using Iterative Deepening Search (IDS).
+* **h₁(n)** is the sum of the minimum Manhattan distance between each box and its nearest target.
+* **h₂(n)** is the distance from the player to the nearest reachable box, estimated using Iterative Deepening Search.
 
-The final heuristic value is therefore:
+The complete heuristic is:
 
-**h(n) = Σ min(ManhattanDistance(Boxᵢ, Goalⱼ))
-       + IDS(Player, NearestBox)**
+**h(n) = Σ min(ManhattanDistance(Boxᵢ, Targetⱼ))
 
-This heuristic combines box-to-goal proximity with player accessibility, providing a more informed estimate of the remaining effort required to solve the puzzle.
+* IDS(Player, NearestBox)**
+
+This heuristic combines box-to-target proximity with player accessibility, producing a more informed estimate of the remaining effort required to solve the puzzle.
 
 ---
 
 ## Why IDS Instead of BFS or DFS?
 
-The `IDSPlayertobox(...)` method computes the distance between the player and the nearest reachable box using **Iterative Deepening Search (IDS)**.
+The `IDSPlayertobox(...)` method estimates the distance between the player and the nearest reachable box using **Iterative Deepening Search (IDS)**.
 
-IDS was selected instead of Breadth-First Search (BFS) because BFS must store all nodes of the current frontier in memory. For a branching factor **b** and solution depth **d**, BFS requires:
+Breadth-First Search explores states level by level and guarantees the shortest path in an unweighted search space. However, it must keep the current search frontier in memory.
 
-- **Time Complexity:** O(bᵈ)
-- **Space Complexity:** O(bᵈ)
+For branching factor **b** and solution depth **d**, BFS requires:
+
+* **Time Complexity:** O(bᵈ)
+* **Space Complexity:** O(bᵈ)
 
 In Sokoban, the search space can become extremely large, making BFS memory-intensive.
 
-Depth-First Search (DFS), on the other hand, requires significantly less memory:
+Depth-First Search requires significantly less memory:
 
-- **Time Complexity:** O(bᵈ)
-- **Space Complexity:** O(bd)
+* **Time Complexity:** O(bᵈ)
+* **Space Complexity:** O(bd)
 
-However, DFS is neither optimal nor guaranteed to find the shortest path, which is important for an accurate heuristic estimate.
+However, DFS is not guaranteed to find the shortest path and may explore deep, irrelevant branches before reaching a nearby box.
 
-IDS combines the advantages of both approaches:
+IDS combines important properties of both approaches:
 
-- **Time Complexity:** O(bᵈ)
-- **Space Complexity:** O(bd)
+* **Time Complexity:** O(bᵈ)
+* **Space Complexity:** O(bd)
+* Finds the shallowest solution in an unweighted search space.
+* Requires memory proportional to the current search depth.
 
-IDS repeatedly performs depth-limited searches with limits 0,1,2,... until a box is reached. Because shallower levels are explored first, IDS guarantees that the first solution found corresponds to the shortest player-to-box distance, similarly to BFS, while requiring memory proportional only to the search depth.
+IDS repeatedly performs depth-limited searches using limits `0, 1, 2, ...` until a reachable box is found. Because shallower depths are examined first, the first successful result represents the shortest player-to-box distance, similarly to BFS.
 
-Although IDS revisits nodes across successive iterations, its overall asymptotic running time remains O(bᵈ), comparable to BFS. In practice, the additional overhead is limited because many branches are quickly discarded due to walls, invalid moves, and deadlock conditions.
+Although IDS revisits states during successive iterations, its overall asymptotic running time remains O(bᵈ). In practice, the additional overhead is limited because many branches are quickly rejected due to walls, invalid moves, and unreachable positions.
 
-As a result, IDS provides an optimal distance estimate while maintaining low memory consumption, making it particularly suitable for Sokoban environments where the state space can grow rapidly.
+Therefore, IDS provides an accurate player-to-box distance estimate while maintaining low memory consumption, making it suitable for Sokoban environments with rapidly growing search spaces.
 
 ---
 
-### Example: Sokoban Hard Level Solution (A*)
+## Swing User Interface
 
-The following images illustrate the execution of the **A\*** search algorithm on a **hard Sokoban level**.
-The UI is going to be implemented using Swwing Framework.
+The application includes a graphical interface implemented using the **Java Swing framework**.
 
-- **Step 0** shows the initial state of the puzzle.
-  - The heuristic value is `h = 10`
-  - The total cost is `f = 10`
-  - The player, boxes, walls, and targets are represented using the predefined symbol mapping.
+The interface is separated into two main windows:
 
-- **Step 389** shows the final (goal) state.
-  - All boxes have been successfully placed on distinct targets (1–1 correspondence).
-  - The heuristic value has reached `h = 0`
-  - The total path cost is `f = 389`
+1. **Level Selection Window**
+   Allows the user to choose one of the predefined Sokoban levels and start the A* solver.
+
+2. **Solution Viewer**
+   Displays every state in the final solution path and provides controls for:
+
+   * Moving to the previous or next step.
+   * Moving directly to the first or final step.
+   * Entering a specific step number.
+   * Viewing the `g`, `h`, and `f` values of the current state.
+
+The A* search is executed using a `SwingWorker`, ensuring that the interface remains responsive while difficult levels are being solved.
+
+Boxes placed successfully on targets are displayed using a different color, making completed target positions easier to identify.
+
+---
+
+### Example: Sokoban Hard Level Solution Using A*
+
+The following images illustrate the execution of the **A*** search algorithm on a hard Sokoban level.
+
+#### Initial State — Step 0
+
+At the beginning of the search:
+
+* The heuristic value is `h = 10`.
+* The path cost is `g = 0`.
+* The total evaluation value is `f = 10`.
+* The player, boxes, walls, and targets are displayed using the predefined symbol mappings.
+
+<p align="center">
+  <img src="step0-HardLevel.png" alt="Initial state of the hard Sokoban level" width="430">
+</p>
+
+#### Final State — Step 389
+
+At the final state:
+
+* All boxes have been successfully placed on distinct targets.
+* The heuristic value has reached `h = 0`.
+* The path cost is `g = 389`.
+* The total evaluation value is `f = 389`.
+
+<p align="center">
+  <img src="step389-HardLevel.png" alt="Final state of the hard Sokoban level" width="430">
+</p>
 
 This example demonstrates:
-- The effectiveness of the A\* algorithm on complex Sokoban configurations.
-- The gradual reduction of the heuristic value until the goal state is reached.
-- The use of deadlock detection to avoid invalid or unsolvable states.
-- 18 seconds for solution.
-  
-![alt text](step0-HardLevel.png)
-![alt text](step389-HardLevel.png)
+
+* The effectiveness of the A* algorithm on a complex Sokoban configuration.
+* The gradual reduction of the heuristic value until the goal state is reached.
+* The use of deadlock detection to avoid invalid or unsolvable states.
+* The reconstruction and visualization of a solution containing 389 moves.
+* A total solving time of approximately 18 seconds for the tested hard level.
