@@ -138,7 +138,7 @@ At the beginning of the search:
 * The player, boxes, walls, and targets are displayed using the predefined symbol mappings.
 
 <p align="center">
-  <img src="step0-HardLevel.png" alt="Initial state of the hard Sokoban level" width="430">
+  <img src="images/step0-HardLevel.png" alt="Initial state of the hard Sokoban level" width="430">
 </p>
 
 #### Final State — Step 389
@@ -151,7 +151,7 @@ At the final state:
 * The total evaluation value is `f = 389`.
 
 <p align="center">
-  <img src="step389-HardLevel.png" alt="Final state of the hard Sokoban level" width="430">
+  <img src="images/step389-HardLevel.png" alt="Final state of the hard Sokoban level" width="430">
 </p>
 
 This example demonstrates:
@@ -169,7 +169,7 @@ This example demonstrates:
 3. Click **Solve** to start the A* search.
 
 <p align="center">
-  <img src="instr.png" alt="Sokoban level selection and solve controls" width="380">
+  <img src="images/instr.png" alt="Sokoban level selection and solve controls" width="380">
 </p>
 
 4. Wait for the search to complete. The solution viewer will open automatically when a solution is found.
