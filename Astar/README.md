@@ -1,15 +1,63 @@
 ## Symbol Mappings
 
-| Symbol | Meaning          |
-| :----: | ---------------- |
-|   `1`  | Player           |
-|   `0`  | Box              |
-|   `#`  | Wall             |
-|   `$`  | Target           |
-|   `*`  | Box on Target    |
-|   `+`  | Player on Target |
+The following symbols are used internally to represent the different Sokoban tiles. In the Swing interface, each symbol is displayed using a graphical tile.
 
----
+<table>
+  <thead>
+    <tr>
+      <th align="center">Tile</th>
+      <th align="center">Symbol</th>
+      <th align="left">Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <img src="images/player.png" alt="Player tile" width="42">
+      </td>
+      <td align="center"><code>1</code></td>
+      <td>Player</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="images/box.png" alt="Box tile" width="42">
+      </td>
+      <td align="center"><code>0</code></td>
+      <td>Box</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="images/wall.png" alt="Wall tile" width="42">
+      </td>
+      <td align="center"><code>#</code></td>
+      <td>Wall</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="images/target.png" alt="Target tile" width="42">
+      </td>
+      <td align="center"><code>$</code></td>
+      <td>Target</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="images/box-on-target.png" alt="Box on target tile" width="42">
+      </td>
+      <td align="center"><code>*</code></td>
+      <td>Box on Target</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="images/player-on-target.png" alt="Player on target tile" width="42">
+      </td>
+      <td align="center"><code>+</code></td>
+      <td>Player on Target</td>
+    </tr>
+  </tbody>
+</table>
+
+A box placed correctly on a target is displayed using a different color, making completed target positions easier to identify.
+
 
 ## File Structure
 
