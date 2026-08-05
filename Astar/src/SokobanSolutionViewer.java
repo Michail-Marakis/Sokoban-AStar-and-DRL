@@ -281,13 +281,66 @@ public class SokobanSolutionViewer extends JFrame {
 
                 case '+':
                     drawTarget(g2, x, y);
-                    drawPlayer(g2, x, y);
+                    drawPlayerOnTarget(g2, x, y);
                     break;
 
                 case ' ':
                 default:
                     break;
             }
+        }
+
+        private void drawPlayerOnTarget(Graphics2D g2, int x, int y) {
+            int margin = 7;
+            int size = CELL_SIZE - 2 * margin;
+
+            g2.setColor(new Color(70, 170, 90));
+            g2.fillOval(
+                    x + margin,
+                    y + margin,
+                    size,
+                    size
+            );
+
+            g2.setColor(new Color(25, 100, 45));
+            g2.drawOval(
+                    x + margin,
+                    y + margin,
+                    size,
+                    size
+            );
+
+            g2.setColor(Color.WHITE);
+
+            g2.fillOval(
+                    x + CELL_SIZE / 3 - 2,
+                    y + CELL_SIZE / 3,
+                    5,
+                    5
+            );
+
+            g2.fillOval(
+                    x + 2 * CELL_SIZE / 3 - 2,
+                    y + CELL_SIZE / 3,
+                    5,
+                    5
+            );
+
+            g2.setColor(Color.BLACK);
+
+            g2.fillOval(
+                    x + CELL_SIZE / 3,
+                    y + CELL_SIZE / 3 + 1,
+                    2,
+                    2
+            );
+
+            g2.fillOval(
+                    x + 2 * CELL_SIZE / 3,
+                    y + CELL_SIZE / 3 + 1,
+                    2,
+                    2
+            );
         }
 
         private void drawBoxOnTarget(Graphics2D g2, int x, int y) {
