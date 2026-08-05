@@ -106,7 +106,7 @@ where:
 
 The complete heuristic is:
 
-**h(n) = Σ min(ManhattanDistance(Boxᵢ, Targetⱼ))
+**h(n)** = Σ min(ManhattanDistance(Boxᵢ, Targetⱼ))
 
 * IDS(Player, NearestBox)**
 
